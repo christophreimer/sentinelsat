@@ -121,6 +121,18 @@ def test_SentinelAPI_connection():
     assert api._last_response.status_code == 200
 
 
+@pytest.mark.scihub
+def test_SentinelAPI_connection_no_ssl():
+    api = SentinelAPI(**_api_auth,
+                      check_certificate=False)
+    api.query(**_small_query)
+
+    assert api._last_query == (
+        'beginPosition:[2015-01-01T00:00:00Z TO 2015-01-02T00:00:00Z] '
+        'footprint:"Intersects(POLYGON((0 0,1 1,0 1,0 0)))"')
+    assert api._last_response.status_code == 200
+
+
 @my_vcr.use_cassette
 @pytest.mark.scihub
 def test_SentinelAPI_wrong_credentials():

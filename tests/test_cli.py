@@ -94,6 +94,18 @@ def test_cli(geojson_path):
     )
     assert result.exit_code == 0
 
+def test_cli_no_certificate_check(geojson_path):
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        ['--user', API_AUTH[0],
+         '--password', API_AUTH[1],
+         '--geometry', geojson_path,
+         '--no_certificate_check'],
+        catch_exceptions=False
+    )
+
+    assert result.exit_code == 0
 
 def test_no_auth_fail(geojson_path):
     with no_netrc():
@@ -129,7 +141,6 @@ def test_no_auth_netrc(geojson_path):
 @pytest.mark.scihub
 def test_returned_filesize(geojson_path):
     runner = CliRunner()
-
     result = runner.invoke(
         cli,
         ['--user', API_AUTH[0],

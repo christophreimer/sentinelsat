@@ -92,9 +92,16 @@ class CommaSeparatedString(click.ParamType):
     help="""Create a geojson file search_footprints.geojson with footprints
     and metadata of the returned products.
     """)
+@click.option(
+    '--no_certificate_check',
+    is_flag=False,
+    default=True,
+    show_default=True,
+    help="Disable ssl certificate check."
+)
 @click.version_option(version=sentinelsat_version, prog_name="sentinelsat")
 def cli(user, password, geometry, start, end, uuid, name, download, sentinel, producttype,
-        instrument, cloud, footprints, path, query, url, order_by, limit):
+        instrument, cloud, footprints, no_certificate_check, path, query, url, order_by, limit):
     """Search for Sentinel products and, optionally, download all the results
     and/or create a geojson file with the search result footprints.
     Beyond your Copernicus Open Access Hub user and password, you must pass a geojson file
@@ -113,8 +120,7 @@ def cli(user, password, geometry, start, end, uuid, name, download, sentinel, pr
     if user is None or password is None:
         raise click.UsageError('Missing --user and --password. Please see docs '
                                'for environment variables and .netrc support.')
-
-    api = SentinelAPI(user, password, url)
+    api = SentinelAPI(user, password, url, check_certificate=no_certificate_check)
 
     search_kwargs = {}
     if sentinel and not (producttype or instrument):
